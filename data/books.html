@@ -17,6 +17,7 @@
                 <th scope="col">Author</th>
                 <th scope="col">Handle</th>
                 <th scope="col">Employee</th>
+                <th scope="link">Link to Book</th>
             </tr>
     
         </thead>
@@ -41,6 +42,9 @@
                           Issued to ${book.employee.firstName} ${book.employee.middleName}
                       </#if>
                   </td>
+                    <td>
+                        <a href="/book">view</a>
+                    </td>
                 </tr>
             </#list>
         </tbody>
