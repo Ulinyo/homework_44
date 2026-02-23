@@ -12,8 +12,12 @@ public class Book {
         this.author = author;
     }
 
-    public boolean isAvalaible(Book book) {
-        return employee != null;
+    public void takeBook(Employee employee) {
+        this.employee = employee;
+    }
+
+    public boolean isAvailable() {
+        return employee == null;
     }
 
     public int getIdenNum() {

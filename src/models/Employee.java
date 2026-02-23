@@ -4,12 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Employee {
-    private String idenNum;
+    private int idenNum;
     private String firstName;
     private String middleName;
     private String lastName;
     List<Book> presentBooks = new ArrayList<>();
     List<Book> pastBooks = new ArrayList<>();
+
+    public Employee(int idenNum, String firstName, String middleName, String lastName){
+        this.idenNum = idenNum;
+        this.firstName =firstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
+    }
 
     public void addListBook(Book book, List<Book> books) {
         books.add(book);
@@ -19,11 +26,11 @@ public class Employee {
         books.remove(book);
     }
 
-    public String getIdenNum() {
+    public int getIdenNum() {
         return idenNum;
     }
 
-    public void setIdenNum(String idenNum) {
+    public void setIdenNum(int idenNum) {
         this.idenNum = idenNum;
     }
 

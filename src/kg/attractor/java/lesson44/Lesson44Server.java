@@ -8,6 +8,9 @@ import freemarker.template.TemplateExceptionHandler;
 import kg.attractor.java.server.BasicServer;
 import kg.attractor.java.server.ContentType;
 import kg.attractor.java.server.ResponseCodes;
+import models.Book;
+import models.BookDataModel;
+import models.BooksDataModel;
 
 import java.io.*;
 
@@ -17,6 +20,8 @@ public class Lesson44Server extends BasicServer {
     public Lesson44Server(String host, int port) throws IOException {
         super(host, port);
         registerGet("/sample", this::freemarkerSampleHandler);
+        registerGet("/books", this::booksHandler);
+        registerGet("/book", this::bookHandler);
     }
 
     private static Configuration initFreeMarker() {
@@ -44,8 +49,12 @@ public class Lesson44Server extends BasicServer {
         renderTemplate(exchange, "sample.html", getSampleDataModel());
     }
 
+    private void booksHandler(HttpExchange exchange) {
+        renderTemplate(exchange, "books.html", new BooksDataModel());
+    }
+
     private void bookHandler(HttpExchange exchange) {
-        renderTemplate(exchange, "books.html", getSampleDataModel());
+        renderTemplate(exchange, "book.html", new BookDataModel());
     }
 
 
