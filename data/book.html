@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <p><strong>Information: </strong></p>
+    <p>
+      ID: ${book.idenNum}
+    </p>
+    <p>Title: ${book.name}</p>
+    <p>Author: ${book.author}</p>
+    <#if book.isAvailable()>
+        Available
+    <#else>
+        Issued to ${book.employee.firstName} ${book.employee.middleName}
+    </#if>
+</body>
+</html>
