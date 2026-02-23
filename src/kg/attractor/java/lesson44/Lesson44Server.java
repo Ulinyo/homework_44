@@ -44,6 +44,11 @@ public class Lesson44Server extends BasicServer {
         renderTemplate(exchange, "sample.html", getSampleDataModel());
     }
 
+    private void bookHandler(HttpExchange exchange) {
+        renderTemplate(exchange, "books.html", getSampleDataModel());
+    }
+
+
     protected void renderTemplate(HttpExchange exchange, String templateFile, Object dataModel) {
         try {
             // Загружаем шаблон из файла по имени.
