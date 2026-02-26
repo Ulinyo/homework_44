@@ -2,6 +2,7 @@ package server;
 
 public enum ResponseCodes {
     OK(200),
+    SEE_OTHER(303),
     NOT_FOUND(404);
 
     private final int code;

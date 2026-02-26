@@ -3,12 +3,20 @@ package server;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 
+import java.awt.*;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public abstract class BasicServer {
 
@@ -68,8 +76,29 @@ public abstract class BasicServer {
 
     }
 
+    protected final String getContentType(HttpExchange exchange) {
+        return exchange.getRequestHeaders()
+                .getOrDefault("Content-Type", List.of(""))
+                .get(0);
+    }
+
+    protected final String getBody(HttpExchange exchange) {
+        Charset utf8 = StandardCharsets.UTF_8;
+        InputStreamReader isr = new InputStreamReader(exchange.getRequestBody(), utf8);
+        try(BufferedReader reader = new BufferedReader(isr)) {
+            return reader.lines().collect(Collectors.joining(""));
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
     protected final void registerGet(String route, RouteHandler handler) {
         getRoutes().put("GET " + route, handler);
+    }
+
+    protected final void registerPost(String route, RouteHandler handler) {
+        getRoutes().put("POST " + route, handler);
     }
 
     protected final void registerFileHandler(String fileExt, ContentType type) {
@@ -118,6 +147,17 @@ public abstract class BasicServer {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    protected void redirect303(HttpExchange exchange, String path) {
+        try {
+            exchange.getResponseHeaders().add("Location", path);
+            exchange.sendResponseHeaders(ResponseCodes.SEE_OTHER.getCode(), 0);
+            exchange.getResponseBody().close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void handleIncomingServerRequests(HttpExchange exchange) {
