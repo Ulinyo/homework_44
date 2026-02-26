@@ -1,0 +1,11 @@
+[
+  {
+    "firstName": "userFirstName",
+    "middleName": "userMiddleName",
+    "lastName": "userLastName",
+    "email": "as@as",
+    "password": "asdfsaf",
+    "presentBooks": [],
+    "pastBooks": []
+  }
+]
