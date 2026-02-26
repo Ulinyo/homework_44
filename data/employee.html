@@ -38,12 +38,11 @@
                               not available
                           </#if>
                       </td>
-                          <td>
-                              <#if book.isAvailable()>
-                                  now book is free
-                              <#else>
-                                  Issued to ${book.employee.firstName} ${book.employee.middleName}
-                              </#if>
+                          <#if book.isAvailable()>
+                              now book is free
+                          <#else>
+                              Issued to ${book.employee.firstName} ${book.employee.middleName}
+                          </#if>
                       </td>
                       <td>
                           <a href="/book">view</a>
@@ -84,7 +83,7 @@
                               Now book is free
                           <#else>
                               Issued to ${book.employee.firstName} ${book.employee.middleName}
-                      </#if>
+                          </#if>
                       </td>
                       <td>
                           <a href="/book">view</a>

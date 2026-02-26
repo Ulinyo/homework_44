@@ -1,27 +1,73 @@
 package lesson44;
 
 import com.sun.net.httpserver.HttpExchange;
+import common.UrlEncodedUtils;
+import dataModel.ProfileDataModel;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
+import models.Employee;
+import repository.EmployeeRepository;
 import server.BasicServer;
 import server.ContentType;
 import server.ResponseCodes;
-import models.BookDataModel;
-import models.BooksDataModel;
-import models.EmployeeDataModel;
+import dataModel.BookDataModel;
+import dataModel.BooksDataModel;
+import dataModel.EmployeeDataModel;
 
 import java.io.*;
+import java.nio.file.Path;
+import java.util.Map;
 
 public class Lesson44Server extends BasicServer {
     private final static Configuration freemarker = initFreeMarker();
+    private EmployeeRepository employeeRepository = new EmployeeRepository();
+
+    private Employee currentEmployee;
 
     public Lesson44Server(String host, int port) throws IOException {
         super(host, port);
         registerGet("/books", this::booksHandler);
         registerGet("/book", this::bookHandler);
         registerGet("/employee", this::employeeHandler);
+
+        registerGet("/login", this::loginGetHadler);
+        registerPost("/login", this::loginPostHandler);
+        registerGet("/profile", this::profileHandler);
+    }
+
+    private void profileHandler(HttpExchange exchange) {
+        ProfileDataModel model = (currentEmployee != null) ? new ProfileDataModel(currentEmployee) : new ProfileDataModel();
+        renderTemplate(exchange, "profile.html", model);
+    }
+
+    private void loginPostHandler(HttpExchange exchange) {
+        String raw = getBody(exchange);
+        Map<String, String> parsed = UrlEncodedUtils.parseUrlEncoded(raw, "&");
+
+        String email = parsed.get("email");
+        String password = parsed.get("user-password");
+
+        boolean isHave = employeeRepository.signUp(password, email);
+        String message;
+        if(isHave) {
+            currentEmployee = employeeRepository.findByEmailAndPassword(email, password);
+            redirect303(exchange, "/profile");
+        } else {
+            message = "<h2>Такой пользователь уже есть </h2><a href='/login'>Попробовать еще раз</a>";
+            try{
+                sendByteData(exchange, ResponseCodes.OK, ContentType.TEXT_HTML, message.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    private void loginGetHadler(HttpExchange exchange) {
+        Path path = makeFilePath("login.html");
+        sendFile(exchange, path, ContentType.TEXT_HTML);
     }
 
     private static Configuration initFreeMarker() {
@@ -87,5 +133,13 @@ public class Lesson44Server extends BasicServer {
         } catch (IOException | TemplateException e) {
             e.printStackTrace();
         }
+    }
+
+    private static String getKeyMap(Map<String, String> map) {
+        String key = "";
+        for(Map.Entry<String, String> m : map.entrySet()) {
+            key = m.getKey();
+        }
+        return key;
     }
 }
