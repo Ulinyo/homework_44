@@ -1,32 +1,47 @@
 package repository;
 
-import com.sun.net.httpserver.HttpExchange;
 import models.Employee;
+import utils.FileUtil;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class EmployeeRepository {
+
     private Map<String, Employee> employers = new HashMap<>();
 
     public EmployeeRepository() {
-        employers.put("ulukman@are", new Employee( "ulukman@are", "asdfjs"));
+        loadFromFile();
+    }
+
+    private void loadFromFile() {
+        List<Employee> list = FileUtil.readFile();
+        for (Employee e : list) {
+            employers.put(e.getEmail(), e);
+        }
+    }
+
+    private void saveToFile() {
+        FileUtil.writeFile(List.copyOf(employers.values()));
     }
 
     public boolean signUp(String password, String email) {
-        if(!checkerEmployers(email)) {
+        if (!employers.containsKey(email)) {
+            System.out.println(password);
             employers.put(email, new Employee(email, password));
+            saveToFile();
             return true;
         }
         return false;
     }
 
-    private boolean checkerEmployers(String email) {
-        return employers.containsKey(email);
-    }
+    public boolean login(String email, String password) {
+        if (!employers.containsKey(email)) {
+            return false;
+        }
 
-    public void addEmployers(String email, Employee e) {
-        employers.put(email, e);
+        return employers.get(email).getPassword().equals(password);
     }
 
     public Map<String, Employee> getEmployers() {

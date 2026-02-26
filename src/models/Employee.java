@@ -8,13 +8,13 @@ public class Employee {
     private String middleName;
     private String lastName;
     private final String email;
-    private final String passwrod;
+    private final String password;
     List<Book> presentBooks = new ArrayList<>();
     List<Book> pastBooks = new ArrayList<>();
 
-    public Employee(String email, String passwrod){
+    public Employee(String email, String password){
         this.email = email;
-        this.passwrod = passwrod;
+        this.password = password;
         firstName = "userFirstName";
         middleName = "userMiddleName";
         lastName = "userLastName";
@@ -66,5 +66,13 @@ public class Employee {
 
     public void setPastBooks(List<Book> pastBooks) {
         this.pastBooks = pastBooks;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getEmail() {
+        return email;
     }
 }

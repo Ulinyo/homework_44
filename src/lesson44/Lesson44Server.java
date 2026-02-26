@@ -38,7 +38,7 @@ public class Lesson44Server extends BasicServer {
         Map<String, String> parsed = UrlEncodedUtils.parseUrlEncoded(raw, "&");
 
         String email = parsed.get("email");
-        String password = parsed.get("password");
+        String password = parsed.get("user-password");
 
         String message;
 
@@ -47,7 +47,6 @@ public class Lesson44Server extends BasicServer {
                 : "<h2>Такой пользователь уже есть </h2><a href='/login'>Попробовать еще раз</a>";
         try{
             sendByteData(exchange, ResponseCodes.OK, ContentType.TEXT_HTML, message.getBytes());
-            employeeRepository.getEmployers().forEach((k, v) -> System.out.println(k + " = " + v));
         }catch (IOException e) {
             e.printStackTrace();
         }
