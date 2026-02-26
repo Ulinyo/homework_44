@@ -13,6 +13,8 @@ public class Employee {
     List<Book> pastBooks = new ArrayList<>();
 
     public Employee(String email, String passwrod){
+        this.email = email;
+        this.passwrod = passwrod;
         firstName = "userFirstName";
         middleName = "userMiddleName";
         lastName = "userLastName";

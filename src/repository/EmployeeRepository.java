@@ -9,11 +9,13 @@ import java.util.Map;
 public class EmployeeRepository {
     private Map<String, Employee> employers = new HashMap<>();
 
-    public boolean signUp(String p, String e) {
-        String[] email = e.split("=");
-        String[] password = p.split("=");
-        if(checkerEmployers(email[1])) {
-            employers.put(email[1], new Employee(email[1], password[1]));
+    public EmployeeRepository() {
+        employers.put("ulukman@are", new Employee( "ulukman@are", "asdfjs"));
+    }
+
+    public boolean signUp(String password, String email) {
+        if(!checkerEmployers(email)) {
+            employers.put(email, new Employee(email, password));
             return true;
         }
         return false;
