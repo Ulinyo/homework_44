@@ -8,9 +8,9 @@ import freemarker.template.TemplateExceptionHandler;
 import server.BasicServer;
 import server.ContentType;
 import server.ResponseCodes;
-import models.BookDataModel;
-import models.BooksDataModel;
-import models.EmployeeDataModel;
+import dataModel.BookDataModel;
+import dataModel.BooksDataModel;
+import dataModel.EmployeeDataModel;
 
 import java.io.*;
 

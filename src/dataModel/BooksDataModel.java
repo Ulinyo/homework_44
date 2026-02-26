@@ -1,4 +1,7 @@
-package models;
+package dataModel;
+
+import models.Book;
+import models.Employee;
 
 import java.util.List;
 

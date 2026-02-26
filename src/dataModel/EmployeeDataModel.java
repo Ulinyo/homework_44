@@ -1,4 +1,10 @@
-package models;
+package dataModel;
+
+import models.Book;
+import models.Employee;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class EmployeeDataModel {
     private Employee employee;
@@ -10,6 +16,8 @@ public class EmployeeDataModel {
         employee.addListBook(new Book(4, "Cat", "Devon Larrat"), employee.getPastBooks());
         employee.addListBook(new Book(7, "Wild street", "Micky Mouse"), employee.getPastBooks());
     }
+
+
 
     public Employee getEmployee() {
         return employee;
