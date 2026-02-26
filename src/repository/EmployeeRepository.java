@@ -1,7 +1,7 @@
 package repository;
 
 import models.Employee;
-import utils.FileUtil;
+import utils.FileUtilEmployers;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,19 +16,18 @@ public class EmployeeRepository {
     }
 
     private void loadFromFile() {
-        List<Employee> list = FileUtil.readFile();
+        List<Employee> list = FileUtilEmployers.readFile();
         for (Employee e : list) {
             employers.put(e.getEmail(), e);
         }
     }
 
     private void saveToFile() {
-        FileUtil.writeFile(List.copyOf(employers.values()));
+        FileUtilEmployers.writeFile(List.copyOf(employers.values()));
     }
 
     public boolean signUp(String password, String email) {
         if (!employers.containsKey(email)) {
-            System.out.println(password);
             employers.put(email, new Employee(email, password));
             saveToFile();
             return true;
@@ -36,15 +35,13 @@ public class EmployeeRepository {
         return false;
     }
 
-    public boolean login(String email, String password) {
-        if (!employers.containsKey(email)) {
-            return false;
-        }
-
-        return employers.get(email).getPassword().equals(password);
-    }
-
     public Map<String, Employee> getEmployers() {
         return employers;
+    }
+
+    public Employee findByEmailAndPassword(String email, String password) {
+        Employee employee = employers.get(email);
+        if (employee != null && employee.getPassword().equals(password)) return employee;
+        return null;
     }
 }

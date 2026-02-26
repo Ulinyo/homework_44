@@ -3,8 +3,26 @@
     "firstName": "userFirstName",
     "middleName": "userMiddleName",
     "lastName": "userLastName",
-    "email": "as@as",
-    "password": "asdfsaf",
+    "email": "asfa@asdfsa",
+    "password": "sadfsaffa",
+    "presentBooks": [],
+    "pastBooks": []
+  },
+  {
+    "firstName": "userFirstName",
+    "middleName": "userMiddleName",
+    "lastName": "userLastName",
+    "email": "asfa@sadfsaf",
+    "password": "sadfaf",
+    "presentBooks": [],
+    "pastBooks": []
+  },
+  {
+    "firstName": "userFirstName",
+    "middleName": "userMiddleName",
+    "lastName": "userLastName",
+    "email": "kamillaThebest@gmail.com",
+    "password": "1234",
     "presentBooks": [],
     "pastBooks": []
   }
