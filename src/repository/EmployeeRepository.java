@@ -26,9 +26,11 @@ public class EmployeeRepository {
         FileUtilEmployers.writeFile(List.copyOf(employers.values()));
     }
 
-    public boolean signUp(String password, String email) {
+    public boolean signUp(String password, String email, String name) {
         if (!employers.containsKey(email)) {
-            employers.put(email, new Employee(email, password));
+            Employee em = new Employee(email, password);
+            em.setFirstName(name);
+            employers.put(email, em);
             saveToFile();
             return true;
         }

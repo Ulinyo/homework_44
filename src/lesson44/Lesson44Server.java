@@ -11,6 +11,7 @@ import models.Employee;
 import repository.EmployeeRepository;
 import server.BasicServer;
 import server.ContentType;
+import server.Cookie;
 import server.ResponseCodes;
 import dataModel.BookDataModel;
 import dataModel.BooksDataModel;
@@ -18,6 +19,7 @@ import dataModel.EmployeeDataModel;
 
 import java.io.*;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Lesson44Server extends BasicServer {
@@ -32,14 +34,67 @@ public class Lesson44Server extends BasicServer {
         registerGet("/book", this::bookHandler);
         registerGet("/employee", this::employeeHandler);
 
+        registerGet("/register", this::registerGetHandler);
+        registerPost("/register", this::registerPostHandler);
         registerGet("/login", this::loginGetHadler);
         registerPost("/login", this::loginPostHandler);
         registerGet("/profile", this::profileHandler);
+
+        registerGet("/cookie", this::cookieHandler);
+    }
+
+    private void cookieHandler(HttpExchange exchange) {
+        Map<String, Object> data = new HashMap<>();
+        String name = "times";
+
+
+        Cookie sessionCookie = new Cookie("userId", "123");
+        setCookie(exchange, sessionCookie);
+
+        Cookie c1 = Cookie.make("user%Id", "321");
+        setCookie(exchange, c1);
+
+        Cookie c2 = Cookie.make("user-email", "sadfa@dfafa");
+        setCookie(exchange, c2);
+
+        Cookie c3 = Cookie.make("restricted!@#$$%^*)(_", "!@#$$%^*)(_");
+        setCookie(exchange, c3);
+
+        String cookieRaw = getCookies(exchange);
+        Map<String, String> cookies = Cookie.parse(cookieRaw);
+
+        String visitedValue = cookies.getOrDefault(name, "0");
+        int times = Integer.parseInt(visitedValue) + 1;
+        Cookie visitedCookie = new Cookie(name, times);
+        setCookie(exchange, visitedCookie);
+
+        data.put(name, times);
+
+        data.put("cookies", cookies);
+
+        renderTemplate(exchange, "cookie.ftlh", data);
     }
 
     private void profileHandler(HttpExchange exchange) {
         ProfileDataModel model = (currentEmployee != null) ? new ProfileDataModel(currentEmployee) : new ProfileDataModel();
         renderTemplate(exchange, "profile.html", model);
+    }
+
+    private void registerPostHandler(HttpExchange exchange) {
+        String raw = getBody(exchange);
+        Map<String, String> parsed = UrlEncodedUtils.parseUrlEncoded(raw, "&");
+        String email = parsed.get("email");
+        String name = parsed.get("user-name");
+        String password = parsed.get("user-password");
+
+        boolean isHave = employeeRepository.signUp(password, email, name);
+        String message = (isHave) ? "<h2>Вы успешно зарегестрировались </h2>"
+                : "<h2>Такой пользователь уже есть </h2><a href='/register'>Попробовать еще раз</a>";
+        try{
+            sendByteData(exchange, ResponseCodes.OK, ContentType.TEXT_HTML, message.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void loginPostHandler(HttpExchange exchange) {
@@ -49,15 +104,18 @@ public class Lesson44Server extends BasicServer {
         String email = parsed.get("email");
         String password = parsed.get("user-password");
 
-        boolean isHave = employeeRepository.signUp(password, email);
-        String message;
-        if(isHave) {
-            currentEmployee = employeeRepository.findByEmailAndPassword(email, password);
+        Employee employee = employeeRepository.findByEmailAndPassword(email, password);
+
+        if (employee != null) {
+            currentEmployee = employee;
             redirect303(exchange, "/profile");
         } else {
-            message = "<h2>Такой пользователь уже есть </h2><a href='/login'>Попробовать еще раз</a>";
-            try{
-                sendByteData(exchange, ResponseCodes.OK, ContentType.TEXT_HTML, message.getBytes());
+            String message = "<h2>Неверный email или пароль</h2>" +
+                    "<a href='/login'>Попробовать еще раз</a>";
+            try {
+                sendByteData(exchange, ResponseCodes.OK,
+                        ContentType.TEXT_HTML,
+                        message.getBytes());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -67,6 +125,11 @@ public class Lesson44Server extends BasicServer {
 
     private void loginGetHadler(HttpExchange exchange) {
         Path path = makeFilePath("login.html");
+        sendFile(exchange, path, ContentType.TEXT_HTML);
+    }
+
+    private void registerGetHandler(HttpExchange exchange) {
+        Path path = makeFilePath("register.html");
         sendFile(exchange, path, ContentType.TEXT_HTML);
     }
 

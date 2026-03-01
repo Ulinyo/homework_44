@@ -32,8 +32,8 @@ public class UrlEncodedUtils {
         if(pairs.length < 2) return Optional.empty();
 
         Charset utf8 = StandardCharsets.UTF_8;
-        String k = URLDecoder.decode(pairs[0], utf8);
-        String v = URLDecoder.decode(pairs[1], utf8);
+        String k = URLDecoder.decode(pairs[0], utf8).strip();
+        String v = URLDecoder.decode(pairs[1], utf8).strip();
         return Optional.of(Map.entry(k, v));
     }
 }
