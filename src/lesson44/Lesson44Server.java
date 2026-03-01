@@ -20,13 +20,15 @@ import dataModel.EmployeeDataModel;
 import java.io.*;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class Lesson44Server extends BasicServer {
     private final static Configuration freemarker = initFreeMarker();
     private EmployeeRepository employeeRepository = new EmployeeRepository();
 
-    private Employee currentEmployee;
+    private final Map<String, Employee> sessions = new HashMap<>();
 
     public Lesson44Server(String host, int port) throws IOException {
         super(host, port);
@@ -76,8 +78,24 @@ public class Lesson44Server extends BasicServer {
     }
 
     private void profileHandler(HttpExchange exchange) {
-        ProfileDataModel model = (currentEmployee != null) ? new ProfileDataModel(currentEmployee) : new ProfileDataModel();
-        renderTemplate(exchange, "profile.html", model);
+        Employee employee = getAuthorizedEmployee(exchange);
+        if(employee == null) {
+            redirect303(exchange, "/login");
+            return;
+        }
+        ProfileDataModel pdm = new ProfileDataModel(employee);
+        renderTemplate(exchange, "profile.html", pdm);
+    }
+
+    private Employee getAuthorizedEmployee(HttpExchange exchange) {
+
+        String cookieRaw = getCookies(exchange);
+        if (cookieRaw == null) return null;
+        Map<String, String> cookies = Cookie.parse(cookieRaw);
+        String sessionId = cookies.get("SessionId");
+
+        if (sessionId == null) return null;
+        return sessions.get(sessionId);
     }
 
     private void registerPostHandler(HttpExchange exchange) {
@@ -107,7 +125,14 @@ public class Lesson44Server extends BasicServer {
         Employee employee = employeeRepository.findByEmailAndPassword(email, password);
 
         if (employee != null) {
-            currentEmployee = employee;
+            String sessionId = UUID.randomUUID().toString();
+            sessions.put(sessionId, employee);
+
+            Cookie sessionCookie = Cookie.make("SessionId", sessionId);
+            sessionCookie.setHttpOnly(true);
+            sessionCookie.setMaxAge(600);
+            setCookie(exchange, sessionCookie);
+
             redirect303(exchange, "/profile");
         } else {
             String message = "<h2>Неверный email или пароль</h2>" +
