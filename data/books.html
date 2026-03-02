@@ -18,6 +18,7 @@
                 <th scope="col">Handle</th>
                 <th scope="col">Employee</th>
                 <th scope="link">Link to Book</th>
+                <th scope="link">Action</th>
             </tr>
     
         </thead>
@@ -25,26 +26,39 @@
         <tbody>
             <#list books as book>
                 <tr class="table-secondary">
-                  <th scope="row">${book.idenNum}</th>
-                  <td>${book.name}</td>
-                  <td>${book.author}</td>
-                  <td>
-                      <#if book.isAvailable()>
-                          Available
-                      <#else>
-                          not available
-                      </#if>
-                  </td>
-                  <td>
-                      <#if book.isAvailable()>
-                          now book is free
-                      <#else>
-                          Issued to ${book.employee.firstName} ${book.employee.middleName}
-                      </#if>
-                  </td>
-                    <td>
-                        <a href="/book">view</a>
-                    </td>
+                    <th scope="row">${book.idenNum}</th>
+                        <td>${book.name}</td>
+                        <td>${book.author}</td>
+                        <td>
+                            <#if book.isAvailable()>
+                                Available
+                            <#else>
+                                not available
+                            </#if>
+                        </td>
+                        <td>
+                            <#if book.isAvailable()>
+                                now book is free
+                            <#else>
+                                Issued to ${book.employee}
+                            </#if>
+                        </td>
+                        <td>
+                            <a href="/book">view</a>
+                        </td>
+                        <td>
+                            <#if book.isAvailable()>
+                                <a href="/take-book?id=${book.idenNum}">Взять</a>
+                            <#else>
+                                <#if book.employee?? && currentEmployee??
+                                && book.employee == currentEmployee.email>
+                                    <a href="/return-book?id=${book.idenNum}">Вернуть</a>
+                                <#else>
+                                    Занята
+                                </#if>
+                            </#if>
+                        </td>
+                    </th>
                 </tr>
             </#list>
         </tbody>
