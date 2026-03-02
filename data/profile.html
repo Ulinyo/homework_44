@@ -8,5 +8,29 @@
     <h2>Профиль пользователя</h2>
     <p>Имя: ${name}</p>
     <p>Email: ${email}</p>
+
+    <h2>Книги которые у вас на данный момент</h2>
+    <#if presentBooks?size == 0>
+        <p>У вас нет книг на руках.</p>
+    <#else>
+        <ul>
+            <#list presentBooks as pb>
+                <li>${pb.name} - ${pb.author}</li>
+            </#list>
+        </ul>
+    </#if>
+
+    <h2>Книги которые <strong>были</strong> у вас</h2>
+    <#if pastBooks?size == 0>
+        <p>У вас нет книг на руках.</p>
+    <#else>
+        <ul>
+            <#list pastBooks as pb>
+                <li>${pb.name} - ${pb.author}</li>
+            </#list>
+        </ul>
+    </#if>
+    <br>
+    <a href="/logout">Выйти</a>
 </body>
 </html>

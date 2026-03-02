@@ -3,6 +3,7 @@ package repository;
 import models.Employee;
 import utils.FileUtilEmployers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +24,7 @@ public class EmployeeRepository {
     }
 
     public void saveToFile() {
-        FileUtilEmployers.writeFile(List.copyOf(employers.values()));
+        FileUtilEmployers.writeFile(new ArrayList<>(employers.values()));
     }
 
     public boolean signUp(String password, String email, String name) {

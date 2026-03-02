@@ -29,7 +29,7 @@ public class Employee {
     }
 
     public void removeListBook(int book, List<Integer> books) {
-        books.remove(book);
+        books.remove(Integer.valueOf(book));
     }
 
     public String getFirstName() {

@@ -15,7 +15,7 @@ public class Book {
     }
 
     public void returnBook(Employee em) {
-        this.employee = "";
+        employee = "";
         em.addListBook(idenNum, em.getPastBooks());
         em.removeListBook(idenNum, em.getPresentBooks());
     }

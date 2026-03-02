@@ -46,27 +46,50 @@ public class Lesson44Server extends BasicServer {
 
         registerGet("/take-book", this::takeBookHandler);
         registerGet("/return-book", this::returnBookHandler);
+
+        registerGet("/logout", this::logoutHandler);
+    }
+
+    private void logoutHandler(HttpExchange exchange) {
+
+        String cookieRaw = getCookies(exchange);
+        if (cookieRaw != null) {
+            Map<String, String> cookies = Cookie.parse(cookieRaw);
+            String sessionId = cookies.get("SessionId");
+            if (sessionId != null) {
+                sessions.remove(sessionId);
+            }
+        }
+        Cookie deleteCookie = Cookie.make("SessionId", "");
+        deleteCookie.setMaxAge(0);
+        setCookie(exchange, deleteCookie);
+
+        redirect303(exchange, "/login");
     }
 
     private void returnBookHandler(HttpExchange exchange) {
         Employee employee = getAuthorizedEmployee(exchange);
+
         if(employee == null) {
             redirect303(exchange, "/login");
             return;
         }
         Map<String, String> map = getQueryParams(exchange);
+        if (!map.containsKey("id")) {
+            redirect303(exchange, "/books");
+            return;
+        }
         int id = Integer.parseInt(map.get("id"));
 
         Book book = bookRepository.findById(id);
 
         if(book != null && !book.isAvailable()) {
-            if(book.getEmployee().equals(employee.getEmail())) {
+            if(employee.getEmail().equals(book.getEmployee())) {
                 book.returnBook(employee);
                 bookRepository.saveToFile();
                 employeeRepository.saveToFile();
             }
         }
-
         redirect303(exchange, "/books");
     }
 
@@ -114,7 +137,7 @@ public class Lesson44Server extends BasicServer {
             redirect303(exchange, "/login");
             return;
         }
-        ProfileDataModel pdm = new ProfileDataModel(employee);
+        ProfileDataModel pdm = new ProfileDataModel(employee, bookRepository);
         renderTemplate(exchange, "profile.html", pdm);
     }
 
@@ -126,7 +149,10 @@ public class Lesson44Server extends BasicServer {
         String sessionId = cookies.get("SessionId");
 
         if (sessionId == null) return null;
-        return sessions.get(sessionId);
+        Employee sessionEmployee = sessions.get(sessionId);
+        if(sessionEmployee == null) return null;
+
+        return employeeRepository.getEmployers().get(sessionEmployee.getEmail());
     }
 
     private void registerPostHandler(HttpExchange exchange) {
