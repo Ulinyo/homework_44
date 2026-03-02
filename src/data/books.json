@@ -1,3 +1,20 @@
 [
-
+  {
+    "idenNum": 123,
+    "name": "Harry Potter",
+    "author": "Joan Roaring",
+    "employee": ""
+  },
+  {
+    "idenNum": 132,
+    "name": "Simba",
+    "author": "Noel Shrek",
+    "employee": "a@a"
+  },
+  {
+    "idenNum": 12,
+    "name": "Elder Ring",
+    "author": "Miyamoto",
+    "employee": ""
+  }
 ]

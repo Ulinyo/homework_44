@@ -11,10 +11,6 @@ public class EmployeeDataModel {
 
     public EmployeeDataModel() {
         employee = new Employee("ashdfkjah@sakdhfsa", "sadfaead");
-        employee.addListBook(new Book(12, "Herry Potter", "John Own"), employee.getPresentBooks());
-        employee.addListBook(new Book(3, "Lion King", "Brony Dony"), employee.getPresentBooks());
-        employee.addListBook(new Book(4, "Cat", "Devon Larrat"), employee.getPastBooks());
-        employee.addListBook(new Book(7, "Wild street", "Micky Mouse"), employee.getPastBooks());
     }
 
 

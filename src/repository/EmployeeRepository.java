@@ -3,6 +3,7 @@ package repository;
 import models.Employee;
 import utils.FileUtilEmployers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,13 +23,15 @@ public class EmployeeRepository {
         }
     }
 
-    private void saveToFile() {
-        FileUtilEmployers.writeFile(List.copyOf(employers.values()));
+    public void saveToFile() {
+        FileUtilEmployers.writeFile(new ArrayList<>(employers.values()));
     }
 
-    public boolean signUp(String password, String email) {
+    public boolean signUp(String password, String email, String name) {
         if (!employers.containsKey(email)) {
-            employers.put(email, new Employee(email, password));
+            Employee em = new Employee(email, password);
+            em.setFirstName(name);
+            employers.put(email, em);
             saveToFile();
             return true;
         }

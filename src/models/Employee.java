@@ -7,10 +7,10 @@ public class Employee {
     private String firstName;
     private String middleName;
     private String lastName;
-    private final String email;
-    private final String password;
-    List<Book> presentBooks = new ArrayList<>();
-    List<Book> pastBooks = new ArrayList<>();
+    private String email;
+    private String password;
+    List<Integer> presentBooks = new ArrayList<>();
+    List<Integer> pastBooks = new ArrayList<>();
 
     public Employee(String email, String password){
         this.email = email;
@@ -20,12 +20,16 @@ public class Employee {
         lastName = "userLastName";
     }
 
-    public void addListBook(Book book, List<Book> books) {
+    public boolean limitPresentBooks() {
+        return presentBooks.size() < 2;
+    }
+
+    public void addListBook(int book, List<Integer> books) {
         books.add(book);
     }
 
-    public void removePresentBook(Book book, List<Book> books) {
-        books.remove(book);
+    public void removeListBook(int book, List<Integer> books) {
+        books.remove(Integer.valueOf(book));
     }
 
     public String getFirstName() {
@@ -52,19 +56,19 @@ public class Employee {
         this.lastName = lastName;
     }
 
-    public List<Book> getPresentBooks() {
+    public List<Integer> getPresentBooks() {
         return presentBooks;
     }
 
-    public void setPresentBooks(List<Book> presentBooks) {
+    public void setPresentBooks(List<Integer> presentBooks) {
         this.presentBooks = presentBooks;
     }
 
-    public List<Book> getPastBooks() {
+    public List<Integer> getPastBooks() {
         return pastBooks;
     }
 
-    public void setPastBooks(List<Book> pastBooks) {
+    public void setPastBooks(List<Integer> pastBooks) {
         this.pastBooks = pastBooks;
     }
 
