@@ -2,31 +2,33 @@ package lesson44;
 
 import com.sun.net.httpserver.HttpExchange;
 import common.UrlEncodedUtils;
+import dataModel.BooksDataModel;
 import dataModel.ProfileDataModel;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
+import models.Book;
 import models.Employee;
+import repository.BookRepository;
 import repository.EmployeeRepository;
 import server.BasicServer;
 import server.ContentType;
 import server.Cookie;
 import server.ResponseCodes;
 import dataModel.BookDataModel;
-import dataModel.BooksDataModel;
 import dataModel.EmployeeDataModel;
 
 import java.io.*;
 import java.nio.file.Path;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 public class Lesson44Server extends BasicServer {
     private final static Configuration freemarker = initFreeMarker();
     private EmployeeRepository employeeRepository = new EmployeeRepository();
+    private BookRepository bookRepository = new BookRepository();
 
     private final Map<String, Employee> sessions = new HashMap<>();
 
@@ -42,39 +44,68 @@ public class Lesson44Server extends BasicServer {
         registerPost("/login", this::loginPostHandler);
         registerGet("/profile", this::profileHandler);
 
-        registerGet("/cookie", this::cookieHandler);
+        registerGet("/take-book", this::takeBookHandler);
+        registerGet("/return-book", this::returnBookHandler);
     }
 
-    private void cookieHandler(HttpExchange exchange) {
-        Map<String, Object> data = new HashMap<>();
-        String name = "times";
+    private void returnBookHandler(HttpExchange exchange) {
+        Employee employee = getAuthorizedEmployee(exchange);
+        if(employee == null) {
+            redirect303(exchange, "/login");
+            return;
+        }
+        Map<String, String> map = getQueryParams(exchange);
+        int id = Integer.parseInt(map.get("id"));
 
+        Book book = bookRepository.findById(id);
 
-        Cookie sessionCookie = new Cookie("userId", "123");
-        setCookie(exchange, sessionCookie);
+        if(book != null && !book.isAvailable()) {
+            if(book.getEmployee().equals(employee.getEmail())) {
+                book.returnBook(employee);
+                bookRepository.saveToFile();
+                employeeRepository.saveToFile();
+            }
+        }
 
-        Cookie c1 = Cookie.make("user%Id", "321");
-        setCookie(exchange, c1);
+        redirect303(exchange, "/books");
+    }
 
-        Cookie c2 = Cookie.make("user-email", "sadfa@dfafa");
-        setCookie(exchange, c2);
+    private void takeBookHandler(HttpExchange exchange) {
+        Employee employee = getAuthorizedEmployee(exchange);
 
-        Cookie c3 = Cookie.make("restricted!@#$$%^*)(_", "!@#$$%^*)(_");
-        setCookie(exchange, c3);
+        if(employee == null) {
+            redirect303(exchange, "/login");
+            return;
+        }
 
-        String cookieRaw = getCookies(exchange);
-        Map<String, String> cookies = Cookie.parse(cookieRaw);
+        Map<String, String> map = getQueryParams(exchange);
+        String idStr = map.get("id");
+        if(idStr == null) {
+            redirect303(exchange, "/books");
+            return;
+        }
 
-        String visitedValue = cookies.getOrDefault(name, "0");
-        int times = Integer.parseInt(visitedValue) + 1;
-        Cookie visitedCookie = new Cookie(name, times);
-        setCookie(exchange, visitedCookie);
+        int id = Integer.parseInt(idStr);
+        Book book = bookRepository.findById(id);
 
-        data.put(name, times);
+        if(book == null) {
+            redirect303(exchange, "/books");
+            return;
+        }
 
-        data.put("cookies", cookies);
+        if(book.isAvailable() && employee.limitPresentBooks()) {
+            book.takeBook(employee);
+            bookRepository.saveToFile();
+            employeeRepository.saveToFile();
+        }
+        redirect303(exchange, "/books");
+    }
 
-        renderTemplate(exchange, "cookie.ftlh", data);
+    private Map<String, String> getQueryParams(HttpExchange exchange) {
+        String query = exchange.getRequestURI().getQuery();
+        if (query == null || query.isBlank()) return Map.of();
+
+        return UrlEncodedUtils.parseUrlEncoded(query, "&");
     }
 
     private void profileHandler(HttpExchange exchange) {
@@ -184,7 +215,8 @@ public class Lesson44Server extends BasicServer {
     }
 
     private void booksHandler(HttpExchange exchange) {
-        renderTemplate(exchange, "books.html", new BooksDataModel());
+        Employee employee = getAuthorizedEmployee(exchange);
+        renderTemplate(exchange, "books.html", new BooksDataModel(bookRepository.getBooks(), employee));
     }
 
     private void bookHandler(HttpExchange exchange) {

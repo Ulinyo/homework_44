@@ -8,7 +8,6 @@ public class BookDataModel {
 
     public BookDataModel() {
         this.book = new Book(123, "Harry Potniy", "Dominik Toretto");
-        book.takeBook(new Employee( "kapuchino@gmail.com", "jdafjas"));
     }
 
     public Book getBook() {

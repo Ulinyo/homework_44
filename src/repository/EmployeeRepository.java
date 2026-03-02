@@ -22,7 +22,7 @@ public class EmployeeRepository {
         }
     }
 
-    private void saveToFile() {
+    public void saveToFile() {
         FileUtilEmployers.writeFile(List.copyOf(employers.values()));
     }
 

@@ -5,8 +5,11 @@
     "lastName": "userLastName",
     "email": "a@a",
     "password": "123",
-    "presentBooks": [],
-    "pastBooks": []
+    "presentBooks": [
+      132
+    ],
+    "pastBooks": [
+    ]
   },
   {
     "firstName": "Ulukman",
