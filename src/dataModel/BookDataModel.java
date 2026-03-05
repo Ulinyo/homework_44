@@ -6,8 +6,8 @@ import models.Employee;
 public class BookDataModel {
     private Book book;
 
-    public BookDataModel() {
-        this.book = new Book(123, "Harry Potniy", "Dominik Toretto");
+    public BookDataModel(Book book) {
+        this.book = book;
     }
 
     public Book getBook() {
