@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="	https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+</head>
+
+<body>
+    <h2>List Employers</h2>
+    <div class="container-fluid">
+        <table class="table table-secondary table-striped-columns">
+            <thead>
+                <tr>
+                    <th scope="col">email</th>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Middle Name</th>
+                    <th scope="col">Last Name</th>
+                    <th scope="link">view</th>
+                </tr>
+            </thead>
+            <tbody>
+                <#list employers as employee>
+                    <tr>
+                        <th scope="row">${employee.email}</th>
+                        <td>${employee.firstName}</td>
+                        <td>${employee.middleName}</td>
+                        <td>${employee.lastName}</td>
+                        <td>
+                            <a type="button" class="btn btn-success" href="/employee?email=${employee.email}">View</a>
+                        </td>
+
+                    </tr>
+                </#list>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>

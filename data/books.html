@@ -44,7 +44,7 @@
                             </#if>
                         </td>
                         <td>
-                            <a href="/book">view</a>
+                            <a href="/book?id=${book.idenNum}">view</a>
                         </td>
                         <td>
                             <#if book.isAvailable()>
@@ -58,7 +58,6 @@
                                 </#if>
                             </#if>
                         </td>
-                    </th>
                 </tr>
             </#list>
         </tbody>
