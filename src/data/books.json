@@ -3,18 +3,24 @@
     "idenNum": 123,
     "name": "Harry Potter",
     "author": "Joan Roaring",
-    "employee": ""
+    "employee": "a@a",
+    "description": "Harry Potter is a, skinny, bespectacled young wizard known for his unruly jet-black hair, bright green eyes (inherited from his mother), and a lightning-bolt-shaped scar on his forehead. As the Boy Who Lived, he is brave, resourceful, and kind, often identified by his round glasses and knobbly knees.",
+    "imgUrl": "images/2.jpg"
   },
   {
     "idenNum": 132,
     "name": "Simba",
     "author": "Noel Shrek",
-    "employee": "a@a"
+    "employee": "a@a",
+    "description": "",
+    "imgUrl": "images/3.png"
   },
   {
     "idenNum": 12,
     "name": "Elder Ring",
     "author": "Miyamoto",
-    "employee": ""
+    "employee": "",
+    "description": "",
+    "imgUrl": "images/4.jpg"
   }
 ]

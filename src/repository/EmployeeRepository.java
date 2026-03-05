@@ -11,14 +11,14 @@ import java.util.Map;
 public class EmployeeRepository {
 
     private Map<String, Employee> employers = new HashMap<>();
+    private List<Employee> listEmployers = FileUtilEmployers.readFile();
 
     public EmployeeRepository() {
         loadFromFile();
     }
 
     private void loadFromFile() {
-        List<Employee> list = FileUtilEmployers.readFile();
-        for (Employee e : list) {
+        for (Employee e : listEmployers) {
             employers.put(e.getEmail(), e);
         }
     }
@@ -46,5 +46,9 @@ public class EmployeeRepository {
         Employee employee = employers.get(email);
         if (employee != null && employee.getPassword().equals(password)) return employee;
         return null;
+    }
+
+    public List<Employee> getListEmployers() {
+        return listEmployers;
     }
 }

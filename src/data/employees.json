@@ -1,8 +1,8 @@
 [
   {
     "firstName": "Ulukman",
-    "middleName": "userMiddleName",
-    "lastName": "userLastName",
+    "middleName": "Zalupkovich",
+    "lastName": "Shrekovich",
     "email": "a@a",
     "password": "123",
     "presentBooks": [
@@ -15,17 +15,17 @@
   },
   {
     "firstName": "Ulukman",
-    "middleName": "userMiddleName",
-    "lastName": "userLastName",
+    "middleName": "Timon",
+    "lastName": "Pumbovich",
     "email": "ulukman303@gmail.com",
     "password": "askjflajf",
     "presentBooks": [],
     "pastBooks": []
   },
   {
-    "firstName": "userFirstName",
-    "middleName": "userMiddleName",
-    "lastName": "userLastName",
+    "firstName": "Nolik",
+    "middleName": "Galileev",
+    "lastName": "Alhamdulyahovich",
     "email": "kamillaThebest@gmail.com",
     "password": "1234",
     "presentBooks": [],
