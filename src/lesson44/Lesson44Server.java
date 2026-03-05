@@ -2,8 +2,7 @@ package lesson44;
 
 import com.sun.net.httpserver.HttpExchange;
 import common.UrlEncodedUtils;
-import dataModel.BooksDataModel;
-import dataModel.ProfileDataModel;
+import dataModel.*;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -16,8 +15,6 @@ import server.BasicServer;
 import server.ContentType;
 import server.Cookie;
 import server.ResponseCodes;
-import dataModel.BookDataModel;
-import dataModel.EmployeeDataModel;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -34,8 +31,8 @@ public class Lesson44Server extends BasicServer {
     public Lesson44Server(String host, int port) throws IOException {
         super(host, port);
         registerGet("/books", this::booksHandler);
-        registerGet("/book", this::bookHandler);
         registerGet("/employee", this::employeeHandler);
+        registerGet("/employers", this::employersHandler);
 
         registerGet("/register", this::registerGetHandler);
         registerPost("/register", this::registerPostHandler);
@@ -48,6 +45,12 @@ public class Lesson44Server extends BasicServer {
 
         registerGet("/logout", this::logoutHandler);
         registerGet("/query", this::queryHandler);
+
+        registerGet("/book", this::bookHandler);
+    }
+
+    private void employersHandler(HttpExchange exchange) {
+        renderTemplate(exchange, "/employers.html", new EmployersDataModel(employeeRepository.getListEmployers()));
     }
 
     private void queryHandler(HttpExchange exchange) {
@@ -223,7 +226,15 @@ public class Lesson44Server extends BasicServer {
     }
 
     private void employeeHandler(HttpExchange exchange) {
-        renderTemplate(exchange, "employee.html", new EmployeeDataModel());
+        Map<String, String> parse = getQueryParams(exchange);
+        String email = parse.get("email");
+
+        Employee employee = employeeRepository.getEmployers().get(email);
+        if(employee == null) {
+            redirect303(exchange, "/employers");
+            return;
+        }
+        renderTemplate(exchange, "employee.html", new EmployeeDataModel(employee, bookRepository));
     }
 
     private void booksHandler(HttpExchange exchange) {
@@ -232,7 +243,15 @@ public class Lesson44Server extends BasicServer {
     }
 
     private void bookHandler(HttpExchange exchange) {
-        renderTemplate(exchange, "book.html", new BookDataModel());
+        Employee employee = getAuthorizedEmployee(exchange);
+        if(employee == null) {
+            redirect303(exchange, "/login");
+            return;
+        }
+        Map<String, String> params = getQueryParams(exchange);
+        String idStr = params.get("id");
+        Book book = bookRepository.findById(Integer.parseInt(idStr));
+        renderTemplate(exchange, "book.html", new BookDataModel(book));
     }
 
     private static String getKeyMap(Map<String, String> map) {
