@@ -8,8 +8,8 @@
 
 <body>
     <h2>Профиль пользователя</h2>
-    <p>Имя: ${name}</p>
-    <p>Email: ${email}</p>
+    <p>ФИО: ${employee.firstName} ${employee.middleName} ${employee.lastName}</p>
+    <p>Email: ${employee.email}</p>
 
     <h2>Книги которые у вас на данный момент</h2>
     <#if presentBooks?size==0>

@@ -7,14 +7,12 @@ import repository.BookRepository;
 import java.util.List;
 
 public class ProfileDataModel {
-    private String name;
-    private String email;
+    private Employee employee;
     private List<Book> presentBooks;
     private List<Book> pastBooks;
 
     public ProfileDataModel(Employee employee, BookRepository bookRepository) {
-        this.name = employee.getFirstName();
-        this.email = employee.getEmail();
+        this.employee = employee;
         this.presentBooks = employee.getPresentBooks()
                 .stream()
                 .map(bookRepository::findById)
@@ -25,8 +23,9 @@ public class ProfileDataModel {
                 .toList();
     }
 
-    public String getName() { return name; }
-    public String getEmail() { return email; }
+    public Employee getEmployee() {
+        return employee;
+    }
 
     public List<Book> getPresentBooks() {
         return presentBooks;

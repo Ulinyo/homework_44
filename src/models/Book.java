@@ -7,6 +7,8 @@ public class Book {
     private String name;
     private String author;
     private String employee = "";
+    private String description;
+    private String imgUrl = "images/";
 
     public Book(int idenNum, String name, String author) {
         this.idenNum = idenNum;
@@ -47,5 +49,21 @@ public class Book {
 
     public void setEmployee(String employee) {
         this.employee = employee;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 }
